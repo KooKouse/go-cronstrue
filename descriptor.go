@@ -408,7 +408,9 @@ func (d *expressionDescriptor) getMonthDescription() string {
 			if t, ok := d.i18n.commaMonthX0ThroughMonthX1(); ok {
 				return t
 			}
-			return d.i18n.commaX0ThroughX1(s)
+			// Note: the upstream descriptor calls commaX0ThroughX1() with NO
+			// argument here (unlike the day-of-week range format).
+			return d.i18n.commaX0ThroughX1("")
 		},
 		func(s string) string {
 			if t, ok := d.i18n.commaOnlyInMonthX0(); ok {
@@ -539,7 +541,8 @@ func (d *expressionDescriptor) getYearDescription() string {
 			if t, ok := d.i18n.commaYearX0ThroughYearX1(); ok {
 				return t
 			}
-			return d.i18n.commaX0ThroughX1(s)
+			// Note: called with NO argument upstream, like the month variant.
+			return d.i18n.commaX0ThroughX1("")
 		},
 		func(s string) string {
 			if t, ok := d.i18n.commaOnlyInYearX0(); ok {

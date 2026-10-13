@@ -1,8 +1,8 @@
 // Package cronstrue converts cron expressions into human readable
 // descriptions. It is a Go port of the JavaScript library cronstrue
 // (https://github.com/bradymholt/cronstrue, MIT licensed, based on upstream
-// v3.32.0), keeping its output and option semantics bug-for-bug compatible
-// where practical.
+// v3.32.0) including all 42 upstream locales, keeping its output and option
+// semantics bug-for-bug compatible where practical.
 //
 // Basic usage:
 //

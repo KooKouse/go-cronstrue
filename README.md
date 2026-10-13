@@ -5,7 +5,7 @@
 
 **English** | [中文说明](#中文说明)
 
-A Go library that converts cron expressions into human-readable descriptions. It is a faithful port of the JavaScript library [cronstrue](https://github.com/bradymholt/cronstrue) (based on upstream v3.32.0), verified to produce **byte-identical output** on a 13,200-case differential test suite against the original library (including error messages).
+A Go library that converts cron expressions into human-readable descriptions. It is a faithful port of the JavaScript library [cronstrue](https://github.com/bradymholt/cronstrue) (based on upstream v3.32.0), including **all 42 upstream locales**, verified to produce **byte-identical output** against the original library on a 158,100-case differential test suite (13,200 English + 144,900 multi-locale cases, including error messages).
 
 ```text
 */5 * * * *        ->  Every 5 minutes
@@ -20,9 +20,35 @@ A Go library that converts cron expressions into human-readable descriptions. It
 - Supports 5-field (standard), 6-field (with seconds or year) and 7-field (Quartz style) cron expressions
 - Supports `* / , - ? L W #` special characters, `@yearly`/`@monthly`/`@daily`/`...` aliases and `@reboot`
 - All upstream options: `verbose`, `dayOfWeekStartIndexZero`, `monthStartIndexZero`, `use24HourTimeFormat`, `trimHoursLeadingZero`, `throwExceptionOnParseError`, `logicalAndDayFields`
-- i18n with locale fallback; **English** and **Simplified Chinese** (`zh_CN`) are currently ported (more locales welcome — see [Adding a locale](#adding-a-locale))
+- **All 42 upstream locales** with identical fallback semantics (see the table below); grammatical case/plural logic for Slavic, Turkic and other languages is ported verbatim
 - Zero dependencies, single pure-Go package
 - Also ships a small CLI
+
+## Supported locales
+
+| Code | Language | Code | Language |
+|---|---|---|---|
+| `af` | Afrikaans | `ko` | Korean |
+| `ar` | Arabic | `my` | Malay (Myanmar) |
+| `az` | Azerbaijani | `nb` | Norwegian |
+| `be` | Belarusian | `nl` | Dutch |
+| `bg` | Bulgarian | `nn` | Norwegian (Nynorsk) |
+| `ca` | Catalan | `pl` | Polish |
+| `cs` | Czech | `pt_BR` | Portuguese (Brazil) |
+| `da` | Danish | `pt_PT` | Portuguese (Portugal) |
+| `de` | German | `ro` | Romanian |
+| `en` | English | `ru` | Russian |
+| `es` | Spanish | `sk` | Slovak |
+| `fa` | Farsi | `sl` | Slovenian |
+| `fi` | Finnish | `sr` | Serbian |
+| `fr` | French | `sv` | Swedish |
+| `he` | Hebrew | `sw` | Swahili |
+| `hr` | Croatian | `tg` | Tajik |
+| `hu` | Hungarian | `th` | Thai |
+| `id` | Indonesian | `tr` | Turkish |
+| `it` | Italian | `uk` | Ukrainian |
+| `ja` | Japanese | `vi` | Vietnamese |
+| `zh_CN` | Chinese (Simplified) | `zh_TW` | Chinese (Traditional) |
 
 ## Installation
 
@@ -63,7 +89,7 @@ By default a parse error is returned as a Go `error` (mirroring the exception th
 | Option | Default | Description |
 |---|---|---|
 | `WithVerbose(v)` | `false` | Longer description spelling out implied fields ("Every minute, every hour, every day") |
-| `WithLocale(name)` | `"en"` | Output language; currently `"en"`, `"zh_CN"` |
+| `WithLocale(name)` | `"en"` | Output language; all 42 upstream locales are supported (see table above) |
 | `WithThrowExceptionOnParseError(v)` | `true` | `true`: return parse errors as `error`; `false`: return the localized error message string instead |
 | `WithDayOfWeekStartIndexZero(v)` | `true` | `true`: Sunday is 0 (standard cron); `false`: Sunday is 1 (Quartz) |
 | `WithMonthStartIndexZero(v)` | `false` | `true`: January is 0 |
@@ -87,9 +113,9 @@ cronstrue -locale zh_CN "0 12 1 * *"
 
 The goal of this port is **bug-for-bug compatible output**. Concretely:
 
-- The full upstream test suite (`test/cronstrue.ts`, `test/i18n.ts`) was ported to Go table tests (187 cases) — all pass.
-- A differential harness ran 13,200 expression × option combinations through both this library and the JavaScript original (cronstrue 3.32.0 on Node.js): outputs and error messages are byte-identical.
-- A few JavaScript-specific quirks are intentionally preserved: numeric coercion inside comma lists (`"05"` → `"5"`), the `1900+n` mapping for two-digit years, and even the `"null"`/`"undefined"` concatenation artifacts of upstream edge cases.
+- The full upstream test suite (`test/cronstrue.ts`, `test/i18n.ts`) was ported to Go table tests (306 cases) — all pass.
+- A differential harness ran 158,100 cases through both this library and the JavaScript original (cronstrue 3.32.0 on Node.js): 13,200 expression × option combinations in English plus 144,900 cases covering all 42 locales (1,150 expressions × 3 option sets each). Outputs and error messages are byte-identical.
+- A few JavaScript-specific quirks are intentionally preserved: numeric coercion inside comma lists (`"05"` → `"5"`), the `1900+n` mapping for two-digit years, Russian/Bulgarian plural and ordinal-suffix rules, and even the `"null"`/`"undefined"` concatenation artifacts of upstream edge cases.
 
 Known intentional deviations (Go idioms):
 
@@ -97,15 +123,15 @@ Known intentional deviations (Go idioms):
 - Unknown locales fall back to English silently (upstream logs a console warning).
 - The deprecated `tzOffset` option is not ported.
 
-## Adding a locale
+## Adding or updating a locale
 
-Locales live in `locale_<name>.go` (e.g. `locale_zh_cn.go`) and implement the unexported `locale` interface. Optional upstream translations are modeled as `(string, bool)` returns — return `ok == false` to keep the fallback behavior. The easiest way to add one is to:
+All 42 upstream locales are already ported. Most locale files (`locale_<name>.go`) were generated from the upstream TypeScript sources and verified against the JavaScript implementation; `locale_ru.go`, `locale_bg.go` and `locale_ro.go` are hand-ported because they contain plural/ordinal helper logic.
 
-1. Copy `src/i18n/locales/<name>.ts` from [bradymholt/cronstrue](https://github.com/bradymholt/cronstrue/tree/master/src/i18n/locales),
-2. create `locale_<name>.go` embedding `enLocale`, overriding every non-`null` method,
-3. register it in an `init()` function with `registerLocale("<name>", ...)`.
+To sync a locale with a newer upstream release:
 
-PRs for the remaining ~40 upstream locales are very welcome!
+1. Update the strings in `locale_<name>.go` from `src/i18n/locales/<name>.ts` in [bradymholt/cronstrue](https://github.com/bradymholt/cronstrue/tree/master/src/i18n/locales), keeping the `(string, bool)` return convention for optional methods (`ok == false` keeps the documented fallback).
+2. Register it in the file's `init()` via `registerLocale("<name>", ...)`.
+3. Run `go test ./...` — the ported upstream golden tests will catch regressions.
 
 ## Development
 
@@ -127,7 +153,7 @@ go build ./...  # build library + CLI
 
 # 中文说明
 
-[go-cronstrue](https://github.com/KooKouse/go-cronstrue) 是 [cronstrue](https://github.com/bradymholt/cronstrue)（基于上游 v3.32.0）的 Go 移植版，把 cron 表达式转换成人类可读的描述。已通过与原 JS 库 **13,200 条差分用例**的逐字节一致性验证（含错误信息）。
+[go-cronstrue](https://github.com/KooKouse/go-cronstrue) 是 [cronstrue](https://github.com/bradymholt/cronstrue)（基于上游 v3.32.0）的 Go 移植版，把 cron 表达式转换成人类可读的描述。已移植**全部 42 种语言**，并通过与原 JS 库 **158,100 条差分用例**的逐字节一致性验证（含错误消息）。
 
 ```text
 */5 * * * *        ->  Every 5 minutes
@@ -141,7 +167,7 @@ go build ./...  # build library + CLI
 - 支持 5 段（标准）、6 段（带秒或年份）、7 段（Quartz 风格）表达式
 - 支持 `* / , - ? L W #` 特殊字符、`@daily` 等别名以及 `@reboot`
 - 完整支持上游所有选项（verbose、24 小时制、星期/月份起始下标等）
-- 内置 i18n：英文、简体中文（`zh_CN`），欢迎贡献其余 locale
+- **全部 42 种上游语言**（含俄语/保加利亚语等复数与序数变化规则，逐一移植）
 - 零依赖、纯 Go；附带命令行工具
 
 ## 安装与使用
@@ -169,13 +195,17 @@ cronstrue -locale zh_CN "0 12 1 * *"   # 在下午 12:00, 限每月 1 号
 
 ## 与原库的兼容性
 
-- 移植了上游完整测试集（187 个 Go 用例），全部通过
-- 13,200 条表达式 × 选项组合与 JS 原版输出逐字节一致
-- 有意保留了原库的一些怪癖（如逗号列表中的 `"05"`→`"5"` 数值化、两位年份 +1900 等）
+- 移植了上游完整测试集（306 个 Go 用例），全部通过
+- 158,100 条表达式 × 选项 × 语言组合与 JS 原版输出逐字节一致
+- 有意保留了原库的一些怪癖（如逗号列表中的 `"05"`→`"5"` 数值化、两位年份 +1900、俄语/保加利亚语复数规则等）
 
-## 贡献新语言
+## 语言列表
 
-参照 `locale_zh_cn.go`，从上游 `src/i18n/locales/` 复制对应 `.ts` 文件翻译为 Go，内嵌 `enLocale` 并覆盖非 `null` 的方法，最后在 `init()` 里 `registerLocale` 注册即可。欢迎 PR！
+42 种语言全部可用：af、ar、az、be、bg、ca、cs、da、de、en、es、fa、fi、fr、he、hr、hu、id、it、ja、ko、my、nb、nl、nn、pl、pt_BR、pt_PT、ro、ru、sk、sl、sr、sv、sw、tg、th、tr、uk、vi、zh_CN、zh_TW（完整对应表见英文部分）。
+
+## 语言维护
+
+42 种语言已全部移植（多数由探测脚本从上游 TS 自动生成并验证，ru/bg/ro 因含复数/序数逻辑为手工移植）。同步上游新版本时直接更新对应 `locale_<name>.go` 并跑 `go test ./...` 即可。
 
 ## 许可证
 
