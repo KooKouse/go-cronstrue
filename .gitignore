@@ -1,0 +1,7 @@
+# Binaries
+cronstrue
+cmd/cronstrue/cronstrue
+
+# Test coverage
+*.out
+coverage.*
