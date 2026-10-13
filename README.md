@@ -53,7 +53,7 @@ A Go library that converts cron expressions into human-readable descriptions. It
 ## Installation
 
 ```sh
-go get github.com/KooKouse/go-cronstrue
+go get github.com/KooKouse/go-cronstrue@v1.0.0
 ```
 
 ## Usage
