@@ -4,7 +4,7 @@ package cronstrue
 // and verified against the JavaScript implementation. Edit with care.
 
 func init() {
-	registerLocale("zh_TW", ZhTWLocale{enLocale{}})
+	registerLocale("zh-Hant", ZhTWLocale{enLocale{}})
 }
 
 // ZhTWLocale is the zh_TW locale.

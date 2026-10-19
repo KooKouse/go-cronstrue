@@ -93,7 +93,7 @@ var locales = map[string]locale{}
 const defaultLocaleName = "en"
 
 // registerLocale registers a locale under the given name (e.g. "en",
-// "zh_CN"). It is called from init functions of the locale files.
+// "zh-Hans"). It is called from init functions of the locale files.
 func registerLocale(name string, l locale) {
 	locales[name] = l
 }

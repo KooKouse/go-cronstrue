@@ -1,7 +1,7 @@
 package cronstrue
 
 func init() {
-	registerLocale("zh_CN", zhCNLocale{enLocale{}})
+	registerLocale("zh-Hans", zhCNLocale{enLocale{}})
 }
 
 // zhCNLocale is the Simplified Chinese locale, ported verbatim from

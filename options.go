@@ -31,7 +31,7 @@ type Options struct {
 	// (e.g. "9:00 AM" instead of "09:00 AM").
 	TrimHoursLeadingZero bool
 
-	// LocaleName selects the output language (e.g. "en", "zh_CN"). Empty
+	// LocaleName selects the output language (e.g. "en", "zh-Hans"). Empty
 	// means the default locale ("en").
 	LocaleName string
 
@@ -96,7 +96,7 @@ func WithTrimHoursLeadingZero(trim bool) Option {
 	return func(o *Options) { o.TrimHoursLeadingZero = trim }
 }
 
-// WithLocale selects the output language by name, e.g. "en" or "zh_CN".
+// WithLocale selects the output language by name, e.g. "en" or "zh-Hans".
 func WithLocale(name string) Option {
 	return func(o *Options) { o.LocaleName = name }
 }

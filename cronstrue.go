@@ -9,7 +9,7 @@
 //	cronstrue.ToString("* * * * *")           // "Every minute"
 //	cronstrue.ToString("*/5 * * * *")         // "Every 5 minutes"
 //	cronstrue.ToString("30 6 * * *")          // "At 06:30 AM"
-//	cronstrue.ToString("0 12 1 * *", cronstrue.WithLocale("zh_CN")) // "在下午 12:00, 限每月 1 号"
+//	cronstrue.ToString("0 12 1 * *", cronstrue.WithLocale("zh-Hans")) // "在下午 12:00, 限每月 1 号"
 //
 // See the Options type for all available settings.
 package cronstrue

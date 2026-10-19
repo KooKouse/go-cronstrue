@@ -34,8 +34,8 @@ A Go library that converts cron expressions into human-readable descriptions. It
 | `be` | Belarusian | `nl` | Dutch |
 | `bg` | Bulgarian | `nn` | Norwegian (Nynorsk) |
 | `ca` | Catalan | `pl` | Polish |
-| `cs` | Czech | `pt_BR` | Portuguese (Brazil) |
-| `da` | Danish | `pt_PT` | Portuguese (Portugal) |
+| `cs` | Czech | `pt-BR` | Portuguese (Brazil) |
+| `da` | Danish | `pt-PT` | Portuguese (Portugal) |
 | `de` | German | `ro` | Romanian |
 | `en` | English | `ru` | Russian |
 | `es` | Spanish | `sk` | Slovak |
@@ -48,7 +48,7 @@ A Go library that converts cron expressions into human-readable descriptions. It
 | `id` | Indonesian | `tr` | Turkish |
 | `it` | Italian | `uk` | Ukrainian |
 | `ja` | Japanese | `vi` | Vietnamese |
-| `zh_CN` | Chinese (Simplified) | `zh_TW` | Chinese (Traditional) |
+| `zh-Hans` | Chinese (Simplified) | `zh-Hant` | Chinese (Traditional) |
 
 ## Installation
 
@@ -74,7 +74,7 @@ func main() {
 	desc, _ = cronstrue.ToString("30 6 1,15 * *")
 	fmt.Println(desc) // At 06:30 AM, on day 1 and 15 of the month
 
-	desc, _ = cronstrue.ToString("0 12 1 * *", cronstrue.WithLocale("zh_CN"))
+	desc, _ = cronstrue.ToString("0 12 1 * *", cronstrue.WithLocale("zh-Hans"))
 	fmt.Println(desc) // 在下午 12:00, 限每月 1 号
 
 	desc, _ = cronstrue.ToString("0 * * * *", cronstrue.WithVerbose(true))
@@ -105,7 +105,7 @@ go install github.com/KooKouse/go-cronstrue/cmd/cronstrue@latest
 cronstrue "*/5 * * * *"
 # Every 5 minutes
 
-cronstrue -locale zh_CN "0 12 1 * *"
+cronstrue -locale zh-Hans "0 12 1 * *"
 # 在下午 12:00, 限每月 1 号
 ```
 
@@ -158,8 +158,8 @@ go build ./...  # build library + CLI
 ```text
 */5 * * * *        ->  Every 5 minutes
 0 12 1 * *         ->  At 12:00 PM, on day 1 of the month
-0 12 1 * * (zh_CN) ->  在下午 12:00, 限每月 1 号
-0 0 * * MON-FRI (zh_CN) ->  在上午 12:00, 星期一至星期五
+0 12 1 * * (zh-Hans) ->  在下午 12:00, 限每月 1 号
+0 0 * * MON-FRI (zh-Hans) ->  在上午 12:00, 星期一至星期五
 ```
 
 ## 特性
@@ -179,7 +179,7 @@ go get github.com/KooKouse/go-cronstrue
 ```go
 desc, err := cronstrue.ToString("*/5 * * * *")            // Every 5 minutes
 desc, _ = cronstrue.ToString("0 12 1 * *",
-    cronstrue.WithLocale("zh_CN"))                        // 在下午 12:00, 限每月 1 号
+    cronstrue.WithLocale("zh-Hans"))                      // 在下午 12:00, 限每月 1 号
 ```
 
 解析失败时默认返回 `error`；也可以用 `cronstrue.WithThrowExceptionOnParseError(false)` 改为返回本地化的错误提示文案（与上游行为一致）。
@@ -190,7 +190,7 @@ desc, _ = cronstrue.ToString("0 12 1 * *",
 
 ```sh
 go install github.com/KooKouse/go-cronstrue/cmd/cronstrue@latest
-cronstrue -locale zh_CN "0 12 1 * *"   # 在下午 12:00, 限每月 1 号
+cronstrue -locale zh-Hans "0 12 1 * *"   # 在下午 12:00, 限每月 1 号
 ```
 
 ## 与原库的兼容性
@@ -201,7 +201,7 @@ cronstrue -locale zh_CN "0 12 1 * *"   # 在下午 12:00, 限每月 1 号
 
 ## 语言列表
 
-42 种语言全部可用：af、ar、az、be、bg、ca、cs、da、de、en、es、fa、fi、fr、he、hr、hu、id、it、ja、ko、my、nb、nl、nn、pl、pt_BR、pt_PT、ro、ru、sk、sl、sr、sv、sw、tg、th、tr、uk、vi、zh_CN、zh_TW（完整对应表见英文部分）。
+42 种语言全部可用：af、ar、az、be、bg、ca、cs、da、de、en、es、fa、fi、fr、he、hr、hu、id、it、ja、ko、my、nb、nl、nn、pl、pt-BR、pt-PT、ro、ru、sk、sl、sr、sv、sw、tg、th、tr、uk、vi、zh-Hans、zh-Hant（完整对应表见英文部分）。
 
 ## 语言维护
 

@@ -4,7 +4,7 @@ package cronstrue
 // and verified against the JavaScript implementation. Edit with care.
 
 func init() {
-	registerLocale("pt_BR", PtBRLocale{enLocale{}})
+	registerLocale("pt-BR", PtBRLocale{enLocale{}})
 }
 
 // PtBRLocale is the pt_BR locale.
